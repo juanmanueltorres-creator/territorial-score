@@ -1,0 +1,26 @@
+[
+  {
+    "schemaVersion": "0.1",
+    "candidateId": "rule:an-nodo-bajo:2026-08-30T09:20:00-03:00",
+    "segmentId": "an-nodo-bajo",
+    "timeWindow": {
+      "start": "2026-08-30T09:20:00-03:00",
+      "end": "2026-08-30T12:25:00.000Z"
+    },
+    "detector": "RULE",
+    "detectorVersion": "0.1.0",
+    "supportingFeatures": [
+      "segment_median_speed_kmh=39.321",
+      "speed_drop_threshold_kmh=29.490",
+      "speed_drop_fraction=0.250"
+    ],
+    "vehiclesObserved": 4,
+    "datasetArtifactRef": "public/data/agua-negra-v0/mobility.synthetic.json",
+    "limitations": [
+      "Transparent baseline compares observations against the median speed of the same segment.",
+      "Candidate timing is based only on the configured local observation window.",
+      "Anomaly candidate is not a road defect or a travel-safety determination."
+    ],
+    "evidenceState": "SYNTHETIC_EXPERIMENT"
+  }
+]

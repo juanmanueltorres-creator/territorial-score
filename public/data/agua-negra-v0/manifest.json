@@ -11,6 +11,7 @@
     "terrain": { "path": "terrain.json", "kind": "TERRAIN", "required": true },
     "weather": { "path": "weather.json", "kind": "WEATHER", "required": true },
     "access": { "path": "access.json", "kind": "ACCESS", "required": true },
-    "evidence": { "path": "evidence.json", "kind": "EVIDENCE", "required": true }
+    "evidence": { "path": "evidence.json", "kind": "EVIDENCE", "required": true },
+    "ruleCandidates": { "path": "candidates.rule.json", "kind": "RULE_CANDIDATES", "required": true }
   }
 }

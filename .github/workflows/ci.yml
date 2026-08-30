@@ -27,6 +27,13 @@ jobs:
       - name: Tests
         run: npm test
 
+      - name: Verify checked-in rule candidates
+        run: |
+          npm run build:rule-candidates -- \
+            public/data/agua-negra-v0/mobility.synthetic.json \
+            /tmp/candidates.rule.json
+          cmp /tmp/candidates.rule.json public/data/agua-negra-v0/candidates.rule.json
+
       - name: Build
         run: npm run build
 

@@ -9,7 +9,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "build": "tsc -b && vite build"
+    "build": "tsc -b && vite build",
+    "build:rule-candidates": "tsx scripts/build-rule-candidates.ts"
   },
   "dependencies": {
     "maplibre-gl": "^5.7.0",
@@ -24,6 +25,7 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "jsdom": "^26.1.0",
+    "tsx": "^4.20.0",
     "typescript": "^5.8.0",
     "vite": "^7.0.0",
     "vitest": "^3.2.0"
