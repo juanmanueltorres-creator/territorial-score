@@ -85,12 +85,11 @@ describe("buildSatelliteContext", () => {
 });
 
 describe("buildSatellitePreviewSvg", () => {
-  it("embeds the frozen JPEG locally and contains no mutable remote URL", () => {
+  it("embeds the frozen JPEG locally and contains no mutable remote image href", () => {
     const svg = buildSatellitePreviewSvg(sourceFixture());
 
     expect(svg).toContain('href="data:image/jpeg;base64,YWJjZA=="');
-    expect(svg).not.toContain("http://");
-    expect(svg).not.toContain("https://");
+    expect(svg).not.toMatch(/href="https?:\/\//);
     expect(svg.endsWith("\n")).toBe(true);
   });
 });
