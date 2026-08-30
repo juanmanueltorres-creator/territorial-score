@@ -5,14 +5,34 @@ import { TrackRow } from "./TrackRow";
 type ScorePanelProps = {
   segments: AlignedSegment[];
   selectedSegmentId: string;
+  selectedTimestamp: string;
   onSelectSegment: (segmentId: string) => void;
   onSelectCandidate: (candidate: MobilityAnomalyCandidate) => void;
   showMl: boolean;
 };
 
+function isCandidateSelected(
+  candidate: MobilityAnomalyCandidate,
+  selectedSegmentId: string,
+  selectedTimestamp: string,
+): boolean {
+  if (candidate.segmentId !== selectedSegmentId) return false;
+
+  const selected = Date.parse(selectedTimestamp);
+  const start = Date.parse(candidate.timeWindow.start);
+  const end = Date.parse(candidate.timeWindow.end);
+
+  return Number.isFinite(selected)
+    && Number.isFinite(start)
+    && Number.isFinite(end)
+    && selected >= start
+    && selected < end;
+}
+
 export function ScorePanel({
   segments,
   selectedSegmentId,
+  selectedTimestamp,
   onSelectSegment,
   onSelectCandidate,
   showMl,
@@ -45,7 +65,7 @@ export function ScorePanel({
                 <button
                   key={candidate.candidateId}
                   className="candidate-chip"
-                  data-selected={candidate.segmentId === selectedSegmentId ? "true" : "false"}
+                  data-selected={isCandidateSelected(candidate, selectedSegmentId, selectedTimestamp) ? "true" : "false"}
                   onClick={() => onSelectCandidate(candidate)}
                   type="button"
                   aria-label={`rule candidate ${candidate.candidateId} ${candidate.segmentId}`}
@@ -65,7 +85,7 @@ export function ScorePanel({
                 <button
                   key={candidate.candidateId}
                   className="candidate-chip"
-                  data-selected={candidate.segmentId === selectedSegmentId ? "true" : "false"}
+                  data-selected={isCandidateSelected(candidate, selectedSegmentId, selectedTimestamp) ? "true" : "false"}
                   onClick={() => onSelectCandidate(candidate)}
                   type="button"
                   aria-label={`ml candidate ${candidate.candidateId} ${candidate.segmentId}`}
