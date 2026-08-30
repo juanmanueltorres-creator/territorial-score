@@ -2,6 +2,12 @@
 
 Territorial Score is an evidence-first spatiotemporal context lab for aligning independent terrain, weather, mobility, access and evidence tracks along real-world corridors. Its V0 uses sourced/reconstructed Agua Negra geography plus a clearly synthetic mobility benchmark to compare an auditable rule detector with an optional unsupervised ML experiment.
 
+## Live demo
+
+**Production:** https://territorial-score.vercel.app/
+
+Current production milestone: **V0.1 — demo polish**.
+
 ## V0 comparison
 
 The mobility experiment keeps a transparent rule baseline and Isolation Forest as independent candidate detectors. Both produce the same auditable candidate contract and are presented as context for review, never as operational authority.
