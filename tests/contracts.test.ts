@@ -80,20 +80,20 @@ describe("TrackSchema", () => {
 
   it("rejects timestamps without timezone", () => {
     const track = weatherTrack();
-    track.samples[0] = { ...track.samples[0], timestamp: "2026-08-30T12:00:00" };
+    track.samples[0] = { ...track.samples[0]!, timestamp: "2026-08-30T12:00:00" };
     expect(() => TrackSchema.parse(track)).toThrow();
   });
 
   it("rejects negative distanceM", () => {
     const track = weatherTrack();
-    track.samples[0] = { ...track.samples[0], distanceM: -1 };
+    track.samples[0] = { ...track.samples[0]!, distanceM: -1 };
     expect(() => TrackSchema.parse(track)).toThrow();
   });
 
   it("rejects NaN and Infinity sample numbers", () => {
     for (const invalid of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
       const track = weatherTrack();
-      track.samples[0] = { ...track.samples[0], value: invalid };
+      track.samples[0] = { ...track.samples[0]!, value: invalid };
       expect(() => TrackSchema.parse(track)).toThrow();
     }
   });
