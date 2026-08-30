@@ -60,6 +60,8 @@ Explicitly excluded from model input: weather, precipitation, elevation, slope, 
 
 Implementation: `sklearn.ensemble.IsolationForest`
 
+Runtime dependency: `scikit-learn==1.9.0`
+
 Configuration:
 
 ```text
@@ -169,7 +171,7 @@ python experiments/mobility-anomaly/scripts/evaluate_artifacts.py \
   --ml-candidates public/data/agua-negra-v0/candidates.ml.json
 ```
 
-CI runs the experiment tests and regenerates checked-in synthetic artifacts. The ML candidate artifact is also regenerated and compared byte-for-byte with the checked-in version.
+CI uses Python 3.12 and the experiment package pins `scikit-learn==1.9.0`. It runs the experiment tests, regenerates the checked-in synthetic artifacts, regenerates `candidates.ml.json`, compares generated artifacts byte-for-byte with the checked-in versions, and runs the shared rule-vs-ML evaluator.
 
 ## Artifact references
 
