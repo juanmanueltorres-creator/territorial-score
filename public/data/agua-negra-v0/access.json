@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "0.1",
+  "trackId": "access-status",
+  "kind": "ACCESS",
+  "evidenceState": "PENDING",
+  "unit": "state",
+  "sourceRef": "juanmanueltorres-creator/Geo_Platform:web/public/data/san_juan_premium/metadata.json@176e3caacd6800c382b39063dea77d4e9e4e20e5",
+  "limitations": [
+    "The source route inventory does not report live road condition or authorization to circulate.",
+    "No current authoritative road or border-crossing status is frozen into Territorial Score V0.",
+    "PENDING is intentional and must not be interpreted as open, closed, safe or unsafe."
+  ],
+  "samples": []
+}

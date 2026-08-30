@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "0.1",
+  "trackId": "terrain-elevation",
+  "kind": "TERRAIN",
+  "evidenceState": "DERIVED",
+  "unit": "m",
+  "sourceRef": "juanmanueltorres-creator/Geo_Platform:web/public/data/san_juan_premium/rn150_agua_negra_profile.json@2da761659d48c2ebd965e01be2e0ee879a88c5a6",
+  "limitations": [
+    "Five canonical corridor nodes are used as a lightweight V0 projection of the 300-sample GeoPlatform profile.",
+    "Elevation comes from Open-Meteo Elevation API / Copernicus DEM 90 m and does not replace leveling, road survey or engineering study."
+  ],
+  "samples": [
+    { "segmentId": "an-las-flores", "distanceM": 0, "value": 1887 },
+    { "segmentId": "an-nodo-bajo", "distanceM": 17846, "value": 2409 },
+    { "segmentId": "an-nodo-medio", "distanceM": 40154, "value": 3118 },
+    { "segmentId": "an-nodo-alto", "distanceM": 66626, "value": 4048 },
+    { "segmentId": "an-paso-agua-negra", "distanceM": 88934, "value": 4760 }
+  ]
+}

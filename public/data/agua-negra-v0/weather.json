@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "0.1",
+  "trackId": "weather-wind-speed-10m",
+  "kind": "WEATHER",
+  "evidenceState": "MODELLED",
+  "unit": "km_h",
+  "sourceRef": "GeoPlatform:premium-sector-weather-runtime",
+  "limitations": [
+    "GeoPlatform exposes corridor weather as model output at runtime, but no frozen weather snapshot is checked into the source corridor assets used by Territorial Score V0.",
+    "Null values preserve missing frozen model context in this versioned dataset; null does not mean 0 km/h.",
+    "Modelled weather does not establish observed road condition, transitability or safety."
+  ],
+  "samples": [
+    { "segmentId": "an-las-flores", "distanceM": 0, "value": null },
+    { "segmentId": "an-nodo-bajo", "distanceM": 17846, "value": null },
+    { "segmentId": "an-nodo-medio", "distanceM": 40154, "value": null },
+    { "segmentId": "an-nodo-alto", "distanceM": 66626, "value": null },
+    { "segmentId": "an-paso-agua-negra", "distanceM": 88934, "value": null }
+  ]
+}

@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - feat/v0-foundation
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Tests
+        run: npm test
+
+      - name: Verify checked-in rule candidates
+        run: |
+          npm run build:rule-candidates -- \
+            public/data/agua-negra-v0/mobility.synthetic.json \
+            /tmp/candidates.rule.json
+          cmp /tmp/candidates.rule.json public/data/agua-negra-v0/candidates.rule.json
+
+      - name: Build
+        run: npm run build
+
+  mobility-benchmark-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install experiment dependencies
+        run: python -m pip install -e "experiments/mobility-anomaly[dev]"
+
+      - name: Benchmark tests
+        run: python -m pytest experiments/mobility-anomaly/tests -q
+
+      - name: Verify checked-in benchmark artifacts
+        run: |
+          python experiments/mobility-anomaly/scripts/build_benchmark.py \
+            --seed territorial-score:agua-negra:mobility:v0.1 \
+            --mobility-output /tmp/mobility.synthetic.json \
+            --truth-output /tmp/anomaly-ground-truth.synthetic.json
+          cmp /tmp/mobility.synthetic.json public/data/agua-negra-v0/mobility.synthetic.json
+          cmp /tmp/anomaly-ground-truth.synthetic.json public/data/agua-negra-v0/anomaly-ground-truth.synthetic.json
+
+      - name: Verify checked-in ML candidates
+        run: |
+          python experiments/mobility-anomaly/scripts/train_and_export.py \
+            --input public/data/agua-negra-v0/mobility.synthetic.json \
+            --output /tmp/candidates.ml.json
+          cmp /tmp/candidates.ml.json public/data/agua-negra-v0/candidates.ml.json
+
+      - name: Evaluate detector artifacts
+        run: |
+          python experiments/mobility-anomaly/scripts/evaluate_artifacts.py \
+            --ground-truth public/data/agua-negra-v0/anomaly-ground-truth.synthetic.json \
+            --rule-candidates public/data/agua-negra-v0/candidates.rule.json \
+            --ml-candidates public/data/agua-negra-v0/candidates.ml.json

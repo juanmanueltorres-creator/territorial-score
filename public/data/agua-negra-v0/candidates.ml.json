@@ -1,0 +1,126 @@
+[
+  {
+    "schemaVersion": "0.1",
+    "candidateId": "iforest:an-nodo-alto:2026-08-30T10:00:00-03:00",
+    "segmentId": "an-nodo-alto",
+    "timeWindow": {
+      "start": "2026-08-30T10:00:00-03:00",
+      "end": "2026-08-30T10:05:00-03:00"
+    },
+    "detector": "ISOLATION_FOREST",
+    "detectorVersion": "0.1.0",
+    "anomalyScore": 0.026050353,
+    "supportingFeatures": [
+      "median_speed=40.832000",
+      "speed_variance=241.390740",
+      "mean_acceleration=-0.063400",
+      "acceleration_variance=0.146175",
+      "hard_brake_count=0",
+      "stop_duration=442.890000",
+      "trajectory_deviation=1.325000",
+      "vehicles_observed=5"
+    ],
+    "vehiclesObserved": 5,
+    "modelArtifactRef": "sklearn:IsolationForest:v0.1.0",
+    "datasetArtifactRef": "public/data/agua-negra-v0/mobility.synthetic.json",
+    "limitations": [
+      "Unsupervised Isolation Forest ranks unusual five-minute mobility feature windows only.",
+      "The model is trained without synthetic ground-truth labels and is not tuned against them.",
+      "Anomaly candidate is not a road defect, road status, confidence score, risk score, or travel-safety determination."
+    ],
+    "evidenceState": "SYNTHETIC_EXPERIMENT"
+  },
+  {
+    "schemaVersion": "0.1",
+    "candidateId": "iforest:an-nodo-alto:2026-08-30T10:05:00-03:00",
+    "segmentId": "an-nodo-alto",
+    "timeWindow": {
+      "start": "2026-08-30T10:05:00-03:00",
+      "end": "2026-08-30T10:10:00-03:00"
+    },
+    "detector": "ISOLATION_FOREST",
+    "detectorVersion": "0.1.0",
+    "anomalyScore": 0.037074127,
+    "supportingFeatures": [
+      "median_speed=38.805000",
+      "speed_variance=308.951353",
+      "mean_acceleration=-0.104667",
+      "acceleration_variance=0.017775",
+      "hard_brake_count=0",
+      "stop_duration=437.179000",
+      "trajectory_deviation=0.734000",
+      "vehicles_observed=3"
+    ],
+    "vehiclesObserved": 3,
+    "modelArtifactRef": "sklearn:IsolationForest:v0.1.0",
+    "datasetArtifactRef": "public/data/agua-negra-v0/mobility.synthetic.json",
+    "limitations": [
+      "Unsupervised Isolation Forest ranks unusual five-minute mobility feature windows only.",
+      "The model is trained without synthetic ground-truth labels and is not tuned against them.",
+      "Anomaly candidate is not a road defect, road status, confidence score, risk score, or travel-safety determination."
+    ],
+    "evidenceState": "SYNTHETIC_EXPERIMENT"
+  },
+  {
+    "schemaVersion": "0.1",
+    "candidateId": "iforest:an-nodo-medio:2026-08-30T09:40:00-03:00",
+    "segmentId": "an-nodo-medio",
+    "timeWindow": {
+      "start": "2026-08-30T09:40:00-03:00",
+      "end": "2026-08-30T09:45:00-03:00"
+    },
+    "detector": "ISOLATION_FOREST",
+    "detectorVersion": "0.1.0",
+    "anomalyScore": 0.122229687,
+    "supportingFeatures": [
+      "median_speed=35.921000",
+      "speed_variance=55.343524",
+      "mean_acceleration=-2.077200",
+      "acceleration_variance=2.743818",
+      "hard_brake_count=3",
+      "stop_duration=39.340000",
+      "trajectory_deviation=1.128000",
+      "vehicles_observed=5"
+    ],
+    "vehiclesObserved": 5,
+    "modelArtifactRef": "sklearn:IsolationForest:v0.1.0",
+    "datasetArtifactRef": "public/data/agua-negra-v0/mobility.synthetic.json",
+    "limitations": [
+      "Unsupervised Isolation Forest ranks unusual five-minute mobility feature windows only.",
+      "The model is trained without synthetic ground-truth labels and is not tuned against them.",
+      "Anomaly candidate is not a road defect, road status, confidence score, risk score, or travel-safety determination."
+    ],
+    "evidenceState": "SYNTHETIC_EXPERIMENT"
+  },
+  {
+    "schemaVersion": "0.1",
+    "candidateId": "iforest:an-nodo-medio:2026-08-30T09:45:00-03:00",
+    "segmentId": "an-nodo-medio",
+    "timeWindow": {
+      "start": "2026-08-30T09:45:00-03:00",
+      "end": "2026-08-30T09:50:00-03:00"
+    },
+    "detector": "ISOLATION_FOREST",
+    "detectorVersion": "0.1.0",
+    "anomalyScore": 0.061175432,
+    "supportingFeatures": [
+      "median_speed=43.662000",
+      "speed_variance=25.149574",
+      "mean_acceleration=-1.212333",
+      "acceleration_variance=2.533372",
+      "hard_brake_count=1",
+      "stop_duration=26.256000",
+      "trajectory_deviation=1.215000",
+      "vehicles_observed=3"
+    ],
+    "vehiclesObserved": 3,
+    "modelArtifactRef": "sklearn:IsolationForest:v0.1.0",
+    "datasetArtifactRef": "public/data/agua-negra-v0/mobility.synthetic.json",
+    "limitations": [
+      "Unsupervised Isolation Forest ranks unusual five-minute mobility feature windows only.",
+      "The model is trained without synthetic ground-truth labels and is not tuned against them.",
+      "Anomaly candidate is not a road defect, road status, confidence score, risk score, or travel-safety determination."
+    ],
+    "evidenceState": "SYNTHETIC_EXPERIMENT"
+  }
+]
