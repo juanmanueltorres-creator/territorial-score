@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Contract tests
-        run: npm test -- tests/contracts.test.ts
+      - name: Tests
+        run: npm test
 
       - name: Build
         run: npm run build
