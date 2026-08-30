@@ -243,6 +243,17 @@ describe("Territorial Score UI", () => {
     expect(within(weatherRow).queryByText(/^0$/)).not.toBeInTheDocument();
   });
 
+  it("shows a compact evidence-state legend above the tracks", () => {
+    render(<App dataset={fixtureDataset({ includeMl: true })} MapComponent={MapProbe} />);
+
+    const legend = screen.getByTestId("score-legend");
+    expect(legend).toHaveTextContent("DERIVED");
+    expect(legend).toHaveTextContent("MODELLED");
+    expect(legend).toHaveTextContent("PENDING");
+    expect(legend).toHaveTextContent("MISSING");
+    expect(legend).toHaveTextContent("SYNTHETIC");
+  });
+
   it("shows RULE CANDIDATE with explicit evidence state and disclaimer", () => {
     render(<App dataset={fixtureDataset()} MapComponent={MapProbe} />);
     fireEvent.click(screen.getByRole("button", { name: /rule candidate.*seg-b/i }));
@@ -253,6 +264,15 @@ describe("Territorial Score UI", () => {
     expect(within(comparison).getByText(/ML candidate: no/i)).toBeInTheDocument();
     expect(within(comparison).getByText("SYNTHETIC EXPERIMENT")).toBeInTheDocument();
     expect(screen.getByText("Anomaly candidate ≠ road defect. Requires contextual review.")).toBeInTheDocument();
+  });
+
+  it("keeps technical candidate details collapsed by default", () => {
+    render(<App dataset={fixtureDataset()} MapComponent={MapProbe} />);
+    fireEvent.click(screen.getByRole("button", { name: /rule candidate.*seg-b/i }));
+
+    const details = screen.getByTestId("candidate-technical-details");
+    expect(details).not.toHaveAttribute("open");
+    expect(within(details).getByText(/RULE candidate detector/i)).toBeInTheDocument();
   });
 
   it("shows ML CANDIDATE when only the unsupervised detector is active", () => {
