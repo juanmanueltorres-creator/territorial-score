@@ -3,16 +3,16 @@ import { alignTracks } from "../core/alignTracks";
 import { selectContext } from "../core/selectContext";
 import type { TerritorialDataset } from "../data/loadDataset";
 import { ContextDetail } from "../features/detail/ContextDetail";
-import { MapPanel, type MapPanelProps } from "../features/map/MapPanel";
+import type { MapPanelProps } from "../features/map/MapPanel";
 import { ScorePanel } from "../features/score/ScorePanel";
 import "./app.css";
 
 export type AppProps = {
   dataset: TerritorialDataset;
-  MapComponent?: ComponentType<MapPanelProps>;
+  MapComponent: ComponentType<MapPanelProps>;
 };
 
-export function App({ dataset, MapComponent = MapPanel }: AppProps) {
+export function App({ dataset, MapComponent }: AppProps) {
   const segments = useMemo(() => alignTracks(dataset), [dataset]);
   const firstSegmentId = segments[0]?.segmentId;
   const [selectedSegmentId, setSelectedSegmentId] = useState(firstSegmentId ?? "");

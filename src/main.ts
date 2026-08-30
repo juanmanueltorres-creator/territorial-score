@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./app/App";
 import { loadDataset } from "./data/loadDataset";
+import { MapPanel } from "./features/map/MapPanel";
 
 const rootElement = document.querySelector<HTMLDivElement>("#app");
 
@@ -14,7 +15,7 @@ root.render(React.createElement("main", { className: "app-shell" }, "Loading ter
 
 loadDataset("/data/agua-negra-v0")
   .then((dataset) => {
-    root.render(React.createElement(App, { dataset }));
+    root.render(React.createElement(App, { dataset, MapComponent: MapPanel }));
   })
   .catch((error: unknown) => {
     const message = error instanceof Error ? error.message : "unknown_dataset_error";
