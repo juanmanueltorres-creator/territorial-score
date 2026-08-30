@@ -127,7 +127,10 @@ export function MapPanel({ corridor, segments, selectedSegmentId }: MapPanelProp
           <p className="eyebrow">CORRIDOR</p>
           <h2 id="map-title">RN 150 · Agua Negra</h2>
         </div>
-        <button className="ghost-button" onClick={reset} type="button">Reset extent</button>
+        <div className="map-panel__actions">
+          <span className="selection-badge" title="Current selected context">SELECTED · {selectedSegmentId}</span>
+          <button className="ghost-button" onClick={reset} type="button">Reset extent</button>
+        </div>
       </header>
       <div className="map-canvas" ref={containerRef} data-selected-segment={selectedSegmentId} />
       <p className="map-note">Selected geometry is a cartographic context highlight only. It does not indicate road status or navigation safety.</p>
