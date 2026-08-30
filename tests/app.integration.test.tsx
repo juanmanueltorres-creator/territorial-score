@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom/vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { ComponentType } from "react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { App } from "../src/app/App";
 import { MobilityAnomalyCandidateSchema } from "../src/contracts/candidate";
 import { DatasetManifestSchema } from "../src/contracts/manifest";
@@ -11,6 +11,8 @@ import type { TerritorialDataset } from "../src/data/loadDataset";
 import type { MapPanelProps } from "../src/features/map/MapPanel";
 
 const ts = "2026-08-30T12:00:00-03:00";
+
+afterEach(cleanup);
 
 function fixtureDataset(): TerritorialDataset {
   const manifest = DatasetManifestSchema.parse({
