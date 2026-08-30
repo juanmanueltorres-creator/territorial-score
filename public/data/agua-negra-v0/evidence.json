@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "0.1",
+  "trackId": "corridor-reference-status",
+  "kind": "EVIDENCE",
+  "evidenceState": "DERIVED",
+  "unit": "verification_status",
+  "sourceRef": "juanmanueltorres-creator/Geo_Platform:web/public/data/san_juan_premium/rn150_agua_negra_markers.geojson@836698e3e1eac4720176ee453404edd1cacd9027",
+  "limitations": [
+    "Verification status describes the cartographic reference of each node, not current road condition or access authorization.",
+    "Interior weather nodes are derived on the verified route; endpoints are official cartographic references."
+  ],
+  "samples": [
+    { "segmentId": "an-las-flores", "distanceM": 0, "value": "verified_official_reference" },
+    { "segmentId": "an-nodo-bajo", "distanceM": 17846, "value": "derived_on_route" },
+    { "segmentId": "an-nodo-medio", "distanceM": 40154, "value": "derived_on_route" },
+    { "segmentId": "an-nodo-alto", "distanceM": 66626, "value": "derived_on_route" },
+    { "segmentId": "an-paso-agua-negra", "distanceM": 88934, "value": "verified_official_reference" }
+  ]
+}

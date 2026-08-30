@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "0.1",
+  "datasetId": "agua-negra-v0",
+  "title": "RN150 / Agua Negra · Territorial Score V0",
+  "territoryRef": "admin:AR:1:J",
+  "corridorRef": "corridor:agua-negra-v1",
+  "generatedAt": "2026-08-30T15:44:27-03:00",
+  "dataAsOf": "2026-07-31T20:23:32Z",
+  "artifacts": {
+    "corridor": { "path": "corridor.geojson", "kind": "CORRIDOR", "required": true },
+    "terrain": { "path": "terrain.json", "kind": "TERRAIN", "required": true },
+    "weather": { "path": "weather.json", "kind": "WEATHER", "required": true },
+    "access": { "path": "access.json", "kind": "ACCESS", "required": true },
+    "evidence": { "path": "evidence.json", "kind": "EVIDENCE", "required": true }
+  }
+}

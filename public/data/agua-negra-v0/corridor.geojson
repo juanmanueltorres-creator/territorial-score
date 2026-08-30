@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "schemaVersion": "0.1",
+    "role": "overview_reconstruction",
+    "sourceRef": "juanmanueltorres-creator/Geo_Platform:web/public/data/san_juan_premium/rn150_agua_negra_markers.geojson@836698e3e1eac4720176ee453404edd1cacd9027",
+    "canonicalCorridorRef": "juanmanueltorres-creator/Geo_Platform:web/public/data/san_juan_premium/rn150_agua_negra_corridor.geojson@1696efe33caf04e7055a1aa233fb969d7e32d759",
+    "limitations": [
+      "Five-node overview reconstruction for Territorial Score V0; not navigation geometry.",
+      "Canonical GeoPlatform corridor is cartographic inventory geometry, not survey-grade and not a statement of transitability."
+    ]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "route": "RN 150", "sector": "Las Flores - Paso Internacional Agua Negra", "distance_km": 88.934 },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-69.224662, -30.3250166],
+          [-69.4011263, -30.3675369],
+          [-69.6121033, -30.3812853],
+          [-69.78807, -30.2774709],
+          [-69.8261033, -30.1928818]
+        ]
+      }
+    }
+  ]
+}
