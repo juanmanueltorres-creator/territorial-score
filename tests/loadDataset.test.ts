@@ -48,8 +48,8 @@ const corridor = {
 
 type FixtureMap = Record<string, unknown>;
 
-function fixtureFetch(fixtures: FixtureMap) {
-  return async (input: RequestInfo | URL): Promise<Response> => {
+function fixtureFetch(fixtures: FixtureMap): typeof fetch {
+  return async (input: RequestInfo | URL, _init?: RequestInit): Promise<Response> => {
     const url = String(input);
     const key = url.split("/").pop() ?? "";
     if (!(key in fixtures)) return new Response("not found", { status: 404 });
