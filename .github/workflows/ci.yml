@@ -29,3 +29,20 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  mobility-benchmark-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install experiment dependencies
+        run: python -m pip install -e "experiments/mobility-anomaly[dev]"
+
+      - name: Benchmark tests
+        run: python -m pytest experiments/mobility-anomaly/tests -q
