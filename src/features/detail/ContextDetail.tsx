@@ -83,24 +83,29 @@ export function ContextDetail({ frame, segment }: ContextDetailProps) {
       ) : null}
 
       {candidates.length > 0 ? (
-        <div className="candidate-detail">
-          <h3>Candidate review</h3>
-          {candidates.map((candidate) => (
-            <article className="candidate-card" key={candidate.candidateId}>
-              <div className="candidate-card__topline">
-                <strong>{candidate.detector} candidate detector</strong>
-                <span>{stateLabel(candidate.evidenceState)}</span>
-              </div>
-              <dl>
-                <div><dt>segment/time</dt><dd>{candidate.segmentId} · {candidate.timeWindow.start} → {candidate.timeWindow.end}</dd></div>
-                <div><dt>vehicles observed</dt><dd>{candidate.vehiclesObserved ?? "not declared"}</dd></div>
-                <div><dt>supporting features</dt><dd>{candidate.supportingFeatures.join(", ") || "none declared"}</dd></div>
-                {candidate.anomalyScore === undefined ? null : <div><dt>anomaly score</dt><dd>{candidate.anomalyScore}</dd></div>}
-                <div><dt>limitations</dt><dd>{candidate.limitations.join(" · ")}</dd></div>
-              </dl>
-            </article>
-          ))}
-        </div>
+        <details className="candidate-detail candidate-detail--collapsible" data-testid="candidate-technical-details">
+          <summary>
+            <span>Technical candidate details</span>
+            <span className="candidate-detail__count">{candidates.length}</span>
+          </summary>
+          <div className="candidate-detail__body">
+            {candidates.map((candidate) => (
+              <article className="candidate-card" key={candidate.candidateId}>
+                <div className="candidate-card__topline">
+                  <strong>{candidate.detector} candidate detector</strong>
+                  <span>{stateLabel(candidate.evidenceState)}</span>
+                </div>
+                <dl>
+                  <div><dt>segment/time</dt><dd>{candidate.segmentId} · {candidate.timeWindow.start} → {candidate.timeWindow.end}</dd></div>
+                  <div><dt>vehicles observed</dt><dd>{candidate.vehiclesObserved ?? "not declared"}</dd></div>
+                  <div><dt>supporting features</dt><dd>{candidate.supportingFeatures.join(", ") || "none declared"}</dd></div>
+                  {candidate.anomalyScore === undefined ? null : <div><dt>anomaly score</dt><dd>{candidate.anomalyScore}</dd></div>}
+                  <div><dt>limitations</dt><dd>{candidate.limitations.join(" · ")}</dd></div>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </details>
       ) : null}
 
       <div className="detail-section">
