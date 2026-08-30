@@ -32,6 +32,11 @@ export function App({ dataset, MapComponent }: AppProps) {
     timestamp: selectedTimestamp,
   });
 
+  const handleSelectSegment = (segmentId: string) => {
+    setSelectedSegmentId(segmentId);
+    setSelectedTimestamp(dataset.manifest.dataAsOf);
+  };
+
   const handleSelectCandidate = (candidate: MobilityAnomalyCandidate) => {
     setSelectedSegmentId(candidate.segmentId);
     setSelectedTimestamp(candidate.timeWindow.start);
@@ -59,7 +64,8 @@ export function App({ dataset, MapComponent }: AppProps) {
       <ScorePanel
         segments={segments}
         selectedSegmentId={selectedId}
-        onSelectSegment={setSelectedSegmentId}
+        selectedTimestamp={selectedTimestamp}
+        onSelectSegment={handleSelectSegment}
         onSelectCandidate={handleSelectCandidate}
         showMl={dataset.mlCandidates !== null}
       />
