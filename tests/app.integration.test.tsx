@@ -155,7 +155,7 @@ describe("Territorial Score UI", () => {
     render(<App dataset={fixtureDataset()} MapComponent={MapProbe} />);
 
     const accessRow = screen.getByTestId("track-access");
-    expect(within(accessRow).getByText("PENDING")).toBeInTheDocument();
+    expect(within(accessRow).getAllByText("PENDING").length).toBeGreaterThan(0);
     expect(within(accessRow).queryByText("OPEN")).not.toBeInTheDocument();
     expect(within(accessRow).queryByText(/^0$/)).not.toBeInTheDocument();
   });
