@@ -18,7 +18,13 @@ Every candidate remains explicitly labelled `SYNTHETIC EXPERIMENT` and carries t
 
 > Anomaly candidate ≠ road defect. Requires contextual review.
 
-See [`docs/model-card-mobility-v0.1.md`](docs/model-card-mobility-v0.1.md) for feature definitions, deterministic Isolation Forest configuration, baseline metrics, evaluation results, limitations and reproducibility commands.
+## Documentation
+
+- [`docs/specs/v0.md`](docs/specs/v0.md) — canonical V0 semantics and integrity rules.
+- [`docs/data-sources.md`](docs/data-sources.md) — Agua Negra source lineage and evidence boundaries.
+- [`docs/model-card-mobility-v0.1.md`](docs/model-card-mobility-v0.1.md) — deterministic Isolation Forest experiment, baseline metrics, limitations and reproducibility.
+- [`docs/v0-acceptance.md`](docs/v0-acceptance.md) — V0 acceptance checklist and canonical CI verification gate.
+- [`docs/geoplatform-adapter-boundary.md`](docs/geoplatform-adapter-boundary.md) — future read-only GeoPlatform snapshot boundary; no live integration is implemented in V0.
 
 ## What it is not
 
