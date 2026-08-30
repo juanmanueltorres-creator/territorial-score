@@ -4,17 +4,24 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import type { ComponentType } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { App } from "../src/app/App";
-import { MobilityAnomalyCandidateSchema } from "../src/contracts/candidate";
+import { MobilityAnomalyCandidateSchema, type MobilityAnomalyCandidate } from "../src/contracts/candidate";
 import { DatasetManifestSchema } from "../src/contracts/manifest";
 import { TrackSchema } from "../src/contracts/track";
 import type { TerritorialDataset } from "../src/data/loadDataset";
 import type { MapPanelProps } from "../src/features/map/MapPanel";
 
 const ts = "2026-08-30T12:00:00-03:00";
+const candidateTs = "2026-08-30T12:10:00-03:00";
+const candidateEnd = "2026-08-30T12:15:00-03:00";
 
 afterEach(cleanup);
 
-function fixtureDataset(): TerritorialDataset {
+type FixtureOptions = {
+  includeMl?: boolean;
+  mlOnRuleWindow?: boolean;
+};
+
+function fixtureDataset(options: FixtureOptions = {}): TerritorialDataset {
   const manifest = DatasetManifestSchema.parse({
     schemaVersion: "0.1",
     datasetId: "agua-negra-v0",
@@ -103,15 +110,54 @@ function fixtureDataset(): TerritorialDataset {
     schemaVersion: "0.1",
     candidateId: "rule-seg-b",
     segmentId: "seg-b",
-    timeWindow: { start: ts, end: "2026-08-30T12:05:00-03:00" },
+    timeWindow: { start: candidateTs, end: candidateEnd },
     detector: "RULE",
     detectorVersion: "0.1",
-    supportingFeatures: ["median_speed"],
+    supportingFeatures: ["median_speed", "vehicles_observed"],
     vehiclesObserved: 4,
     datasetArtifactRef: "fixture:mobility",
     limitations: ["synthetic candidate"],
     evidenceState: "SYNTHETIC_EXPERIMENT",
   });
+
+  const mlCandidates: MobilityAnomalyCandidate[] | null = options.includeMl
+    ? [
+        MobilityAnomalyCandidateSchema.parse({
+          schemaVersion: "0.1",
+          candidateId: "iforest-seg-a",
+          segmentId: "seg-a",
+          timeWindow: { start: ts, end: "2026-08-30T12:05:00-03:00" },
+          detector: "ISOLATION_FOREST",
+          detectorVersion: "0.1.0",
+          anomalyScore: 0.31,
+          supportingFeatures: ["stop_duration", "vehicles_observed"],
+          vehiclesObserved: 3,
+          modelArtifactRef: "sklearn:IsolationForest:v0.1.0",
+          datasetArtifactRef: "fixture:mobility",
+          limitations: ["synthetic ML candidate"],
+          evidenceState: "SYNTHETIC_EXPERIMENT",
+        }),
+        ...(options.mlOnRuleWindow
+          ? [
+              MobilityAnomalyCandidateSchema.parse({
+                schemaVersion: "0.1",
+                candidateId: "iforest-seg-b",
+                segmentId: "seg-b",
+                timeWindow: { start: candidateTs, end: candidateEnd },
+                detector: "ISOLATION_FOREST",
+                detectorVersion: "0.1.0",
+                anomalyScore: 0.42,
+                supportingFeatures: ["median_speed", "hard_brake_count"],
+                vehiclesObserved: 4,
+                modelArtifactRef: "sklearn:IsolationForest:v0.1.0",
+                datasetArtifactRef: "fixture:mobility",
+                limitations: ["synthetic ML candidate"],
+                evidenceState: "SYNTHETIC_EXPERIMENT",
+              }),
+            ]
+          : []),
+      ]
+    : null;
 
   return {
     manifest,
@@ -130,7 +176,7 @@ function fixtureDataset(): TerritorialDataset {
     },
     tracks: { terrain, weather, mobility, access, evidence },
     ruleCandidates: [ruleCandidate],
-    mlCandidates: null,
+    mlCandidates,
   };
 }
 
@@ -172,5 +218,41 @@ describe("Territorial Score UI", () => {
     const weatherRow = screen.getByTestId("track-weather");
     expect(within(weatherRow).getByText("MISSING")).toBeInTheDocument();
     expect(within(weatherRow).queryByText(/^0$/)).not.toBeInTheDocument();
+  });
+
+  it("shows RULE CANDIDATE with explicit evidence state and disclaimer", () => {
+    render(<App dataset={fixtureDataset()} MapComponent={MapProbe} />);
+    fireEvent.click(screen.getByRole("button", { name: /rule candidate.*seg-b/i }));
+
+    const comparison = screen.getByTestId("candidate-comparison");
+    expect(within(comparison).getByText("RULE CANDIDATE")).toBeInTheDocument();
+    expect(within(comparison).getByText(/rule candidate: yes/i)).toBeInTheDocument();
+    expect(within(comparison).getByText(/ML candidate: no/i)).toBeInTheDocument();
+    expect(within(comparison).getByText("SYNTHETIC EXPERIMENT")).toBeInTheDocument();
+    expect(screen.getByText("Anomaly candidate ≠ road defect. Requires contextual review.")).toBeInTheDocument();
+  });
+
+  it("shows ML CANDIDATE when only the unsupervised detector is active", () => {
+    render(<App dataset={fixtureDataset({ includeMl: true })} MapComponent={MapProbe} />);
+
+    const comparison = screen.getByTestId("candidate-comparison");
+    expect(within(comparison).getByText("ML CANDIDATE")).toBeInTheDocument();
+    expect(within(comparison).getByText(/rule candidate: no/i)).toBeInTheDocument();
+    expect(within(comparison).getByText(/ML candidate: yes/i)).toBeInTheDocument();
+    expect(within(comparison).getByText(/model anomaly score/i)).toHaveTextContent("0.31");
+  });
+
+  it("shows BOTH only for overlapping rule and ML windows and selects candidate time", () => {
+    render(<App dataset={fixtureDataset({ includeMl: true, mlOnRuleWindow: true })} MapComponent={MapProbe} />);
+    fireEvent.click(screen.getByRole("button", { name: /rule candidate.*seg-b/i }));
+
+    expect(screen.getByTestId("context-timestamp")).toHaveTextContent(candidateTs);
+    const comparison = screen.getByTestId("candidate-comparison");
+    expect(within(comparison).getByText("BOTH")).toBeInTheDocument();
+    expect(within(comparison).getByText(/rule candidate: yes/i)).toBeInTheDocument();
+    expect(within(comparison).getByText(/ML candidate: yes/i)).toBeInTheDocument();
+    expect(within(comparison).getByText(/shared supporting features/i)).toHaveTextContent("median_speed");
+    expect(within(comparison).getByText(/model anomaly score/i)).toHaveTextContent("0.42");
+    expect(screen.queryByText(/ground truth/i)).not.toBeInTheDocument();
   });
 });
