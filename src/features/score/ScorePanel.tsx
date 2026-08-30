@@ -50,6 +50,14 @@ export function ScorePanel({
         <span className="panel__meta">{segments.length} segments</span>
       </header>
 
+      <div className="score-legend" data-testid="score-legend" aria-label="Evidence state legend">
+        <span className="legend-chip legend-chip--derived">DERIVED</span>
+        <span className="legend-chip legend-chip--modelled">MODELLED</span>
+        <span className="legend-chip legend-chip--pending">PENDING</span>
+        <span className="legend-chip legend-chip--missing">MISSING</span>
+        <span className="legend-chip legend-chip--synthetic">SYNTHETIC</span>
+      </div>
+
       <div className="score-grid" role="group" aria-label="Territorial tracks">
         <TrackRow label="TERRAIN" trackKey="terrain" segments={segments} selectedSegmentId={selectedSegmentId} onSelectSegment={onSelectSegment} />
         <TrackRow label="WEATHER" trackKey="weather" segments={segments} selectedSegmentId={selectedSegmentId} onSelectSegment={onSelectSegment} />
