@@ -19,6 +19,7 @@ afterEach(cleanup);
 type FixtureOptions = {
   includeMl?: boolean;
   mlOnRuleWindow?: boolean;
+  secondMlOnSameSegment?: boolean;
 };
 
 function fixtureDataset(options: FixtureOptions = {}): TerritorialDataset {
@@ -137,6 +138,28 @@ function fixtureDataset(options: FixtureOptions = {}): TerritorialDataset {
           limitations: ["synthetic ML candidate"],
           evidenceState: "SYNTHETIC_EXPERIMENT",
         }),
+        ...(options.secondMlOnSameSegment
+          ? [
+              MobilityAnomalyCandidateSchema.parse({
+                schemaVersion: "0.1",
+                candidateId: "iforest-seg-a-later",
+                segmentId: "seg-a",
+                timeWindow: {
+                  start: "2026-08-30T12:20:00-03:00",
+                  end: "2026-08-30T12:25:00-03:00",
+                },
+                detector: "ISOLATION_FOREST",
+                detectorVersion: "0.1.0",
+                anomalyScore: 0.29,
+                supportingFeatures: ["trajectory_deviation", "vehicles_observed"],
+                vehiclesObserved: 3,
+                modelArtifactRef: "sklearn:IsolationForest:v0.1.0",
+                datasetArtifactRef: "fixture:mobility",
+                limitations: ["synthetic ML candidate"],
+                evidenceState: "SYNTHETIC_EXPERIMENT",
+              }),
+            ]
+          : []),
         ...(options.mlOnRuleWindow
           ? [
               MobilityAnomalyCandidateSchema.parse({
@@ -240,6 +263,25 @@ describe("Territorial Score UI", () => {
     expect(within(comparison).getByText(/rule candidate: no/i)).toBeInTheDocument();
     expect(within(comparison).getByText(/ML candidate: yes/i)).toBeInTheDocument();
     expect(within(comparison).getByText(/model anomaly score/i)).toHaveTextContent("0.31");
+  });
+
+  it("keeps exactly one ML candidate selected by segment and time window", () => {
+    render(<App dataset={fixtureDataset({ includeMl: true, secondMlOnSameSegment: true })} MapComponent={MapProbe} />);
+
+    const candidates = screen.getAllByRole("button", { name: /ml candidate.*seg-a/i });
+    expect(candidates).toHaveLength(2);
+    expect(candidates[0]).toHaveAttribute("data-selected", "true");
+    expect(candidates[1]).toHaveAttribute("data-selected", "false");
+  });
+
+  it("resets candidate timestamp to dataAsOf when selecting a territorial track", () => {
+    render(<App dataset={fixtureDataset()} MapComponent={MapProbe} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /rule candidate.*seg-b/i }));
+    expect(screen.getByTestId("context-timestamp")).toHaveTextContent(candidateTs);
+
+    fireEvent.click(screen.getByRole("button", { name: /terrain seg-a/i }));
+    expect(screen.getByTestId("context-timestamp")).toHaveTextContent(ts);
   });
 
   it("shows BOTH only for overlapping rule and ML windows and selects candidate time", () => {
