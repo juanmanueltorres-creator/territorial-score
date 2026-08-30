@@ -1,4 +1,5 @@
 import { useMemo, useState, type ComponentType } from "react";
+import type { MobilityAnomalyCandidate } from "../contracts/candidate";
 import { alignTracks } from "../core/alignTracks";
 import { selectContext } from "../core/selectContext";
 import type { TerritorialDataset } from "../data/loadDataset";
@@ -16,6 +17,7 @@ export function App({ dataset, MapComponent }: AppProps) {
   const segments = useMemo(() => alignTracks(dataset), [dataset]);
   const firstSegmentId = segments[0]?.segmentId;
   const [selectedSegmentId, setSelectedSegmentId] = useState(firstSegmentId ?? "");
+  const [selectedTimestamp, setSelectedTimestamp] = useState(dataset.manifest.dataAsOf);
 
   if (!firstSegmentId) {
     return <main className="app-shell"><section className="fatal-state">No aligned corridor segments are available.</section></main>;
@@ -27,8 +29,13 @@ export function App({ dataset, MapComponent }: AppProps) {
   const selectedSegment = segments.find((segment) => segment.segmentId === selectedId) ?? segments[0]!;
   const frame = selectContext(segments, {
     segmentId: selectedId,
-    timestamp: dataset.manifest.dataAsOf,
+    timestamp: selectedTimestamp,
   });
+
+  const handleSelectCandidate = (candidate: MobilityAnomalyCandidate) => {
+    setSelectedSegmentId(candidate.segmentId);
+    setSelectedTimestamp(candidate.timeWindow.start);
+  };
 
   return (
     <main className="app-shell">
@@ -53,6 +60,7 @@ export function App({ dataset, MapComponent }: AppProps) {
         segments={segments}
         selectedSegmentId={selectedId}
         onSelectSegment={setSelectedSegmentId}
+        onSelectCandidate={handleSelectCandidate}
         showMl={dataset.mlCandidates !== null}
       />
 
