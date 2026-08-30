@@ -62,7 +62,7 @@ export function MapPanel({ corridor, segments, selectedSegmentId }: MapPanelProp
       container: containerRef.current,
       center: [-69.55, -30.3],
       zoom: 8,
-      attributionControl: true,
+      attributionControl: { compact: true },
       style: {
         version: 8,
         sources: {
