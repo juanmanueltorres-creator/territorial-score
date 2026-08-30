@@ -46,3 +46,12 @@ jobs:
 
       - name: Benchmark tests
         run: python -m pytest experiments/mobility-anomaly/tests -q
+
+      - name: Verify checked-in benchmark artifacts
+        run: |
+          python experiments/mobility-anomaly/scripts/build_benchmark.py \
+            --seed territorial-score:agua-negra:mobility:v0.1 \
+            --mobility-output /tmp/mobility.synthetic.json \
+            --truth-output /tmp/anomaly-ground-truth.synthetic.json
+          cmp /tmp/mobility.synthetic.json public/data/agua-negra-v0/mobility.synthetic.json
+          cmp /tmp/anomaly-ground-truth.synthetic.json public/data/agua-negra-v0/anomaly-ground-truth.synthetic.json
