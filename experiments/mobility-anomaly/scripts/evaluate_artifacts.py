@@ -19,9 +19,9 @@ def main() -> None:
     args = parser.parse_args()
 
     truth_payload = read_json(args.ground_truth)
-    truth = truth_payload.get("anomalies") if isinstance(truth_payload, dict) else None
+    truth = truth_payload.get("windows") if isinstance(truth_payload, dict) else None
     if not isinstance(truth, list):
-        raise ValueError("ground truth artifact must contain an anomalies array")
+        raise ValueError("ground truth artifact must contain a windows array")
 
     result = {
         "rule": evaluate_candidate_windows(read_json(args.rule_candidates), truth),
