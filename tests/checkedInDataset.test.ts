@@ -42,6 +42,9 @@ describe("checked-in Agua Negra V0 dataset", () => {
       vehiclesObserved: 4,
       evidenceState: "SYNTHETIC_EXPERIMENT",
     });
-    expect(dataset.mlCandidates).toBeNull();
+    expect(dataset.mlCandidates?.length).toBeGreaterThan(0);
+    expect(dataset.mlCandidates?.every((candidate) =>
+      candidate.detector === "ISOLATION_FOREST" && candidate.evidenceState === "SYNTHETIC_EXPERIMENT"
+    )).toBe(true);
   });
 });
