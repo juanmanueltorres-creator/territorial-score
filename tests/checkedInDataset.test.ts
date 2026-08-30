@@ -35,7 +35,13 @@ describe("checked-in Agua Negra V0 dataset", () => {
     expect(dataset.tracks.access.samples).toEqual([]);
     expect(dataset.tracks.evidence.samples).toHaveLength(5);
     expect(dataset.tracks.mobility).toBeNull();
-    expect(dataset.ruleCandidates).toBeNull();
+    expect(dataset.ruleCandidates).toHaveLength(1);
+    expect(dataset.ruleCandidates?.[0]).toMatchObject({
+      detector: "RULE",
+      segmentId: "an-nodo-bajo",
+      vehiclesObserved: 4,
+      evidenceState: "SYNTHETIC_EXPERIMENT",
+    });
     expect(dataset.mlCandidates).toBeNull();
   });
 });
