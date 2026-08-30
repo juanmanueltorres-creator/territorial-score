@@ -27,6 +27,7 @@ export const DatasetArtifactKindSchema = z.enum([
   "ANOMALY_GROUND_TRUTH",
   "RULE_CANDIDATES",
   "ML_CANDIDATES",
+  "SATELLITE_CONTEXT",
 ]);
 
 export const DatasetArtifactRefSchema = z
@@ -38,32 +39,64 @@ export const DatasetArtifactRefSchema = z
   })
   .strict();
 
-const DatasetArtifactsSchema = z
+const coreArtifactShape = {
+  corridor: DatasetArtifactRefSchema,
+  terrain: DatasetArtifactRefSchema,
+  weather: DatasetArtifactRefSchema,
+  access: DatasetArtifactRefSchema,
+  evidence: DatasetArtifactRefSchema,
+  mobility: DatasetArtifactRefSchema.optional(),
+  anomalyGroundTruth: DatasetArtifactRefSchema.optional(),
+  ruleCandidates: DatasetArtifactRefSchema.optional(),
+  mlCandidates: DatasetArtifactRefSchema.optional(),
+};
+
+const DatasetArtifactsV01Schema = z.object(coreArtifactShape).strict();
+
+const RequiredSatelliteArtifactRefSchema = DatasetArtifactRefSchema.extend({
+  kind: z.literal("SATELLITE_CONTEXT"),
+  required: z.literal(true),
+});
+
+const DatasetArtifactsV02Schema = z
   .object({
-    corridor: DatasetArtifactRefSchema,
-    terrain: DatasetArtifactRefSchema,
-    weather: DatasetArtifactRefSchema,
-    access: DatasetArtifactRefSchema,
-    evidence: DatasetArtifactRefSchema,
-    mobility: DatasetArtifactRefSchema.optional(),
-    anomalyGroundTruth: DatasetArtifactRefSchema.optional(),
-    ruleCandidates: DatasetArtifactRefSchema.optional(),
-    mlCandidates: DatasetArtifactRefSchema.optional(),
+    ...coreArtifactShape,
+    satelliteContext: RequiredSatelliteArtifactRefSchema,
   })
   .strict();
 
-export const DatasetManifestSchema = z
+const manifestMetadataShape = {
+  title: nonEmptyString,
+  territoryRef: nonEmptyString,
+  corridorRef: nonEmptyString,
+  generatedAt: offsetAwareTimestamp,
+  dataAsOf: offsetAwareTimestamp,
+};
+
+export const DatasetManifestV01Schema = z
   .object({
     schemaVersion: z.literal("0.1"),
     datasetId: z.literal("agua-negra-v0"),
-    title: nonEmptyString,
-    territoryRef: nonEmptyString,
-    corridorRef: nonEmptyString,
-    generatedAt: offsetAwareTimestamp,
-    dataAsOf: offsetAwareTimestamp,
-    artifacts: DatasetArtifactsSchema,
+    ...manifestMetadataShape,
+    artifacts: DatasetArtifactsV01Schema,
   })
   .strict();
 
+export const DatasetManifestV02Schema = z
+  .object({
+    schemaVersion: z.literal("0.2"),
+    datasetId: z.literal("agua-negra-v0.2"),
+    ...manifestMetadataShape,
+    artifacts: DatasetArtifactsV02Schema,
+  })
+  .strict();
+
+export const DatasetManifestSchema = z.discriminatedUnion("schemaVersion", [
+  DatasetManifestV01Schema,
+  DatasetManifestV02Schema,
+]);
+
 export type DatasetArtifactRef = z.infer<typeof DatasetArtifactRefSchema>;
+export type DatasetManifestV01 = z.infer<typeof DatasetManifestV01Schema>;
+export type DatasetManifestV02 = z.infer<typeof DatasetManifestV02Schema>;
 export type DatasetManifest = z.infer<typeof DatasetManifestSchema>;
