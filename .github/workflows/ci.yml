@@ -62,3 +62,17 @@ jobs:
             --truth-output /tmp/anomaly-ground-truth.synthetic.json
           cmp /tmp/mobility.synthetic.json public/data/agua-negra-v0/mobility.synthetic.json
           cmp /tmp/anomaly-ground-truth.synthetic.json public/data/agua-negra-v0/anomaly-ground-truth.synthetic.json
+
+      - name: Verify checked-in ML candidates
+        run: |
+          python experiments/mobility-anomaly/scripts/train_and_export.py \
+            --input public/data/agua-negra-v0/mobility.synthetic.json \
+            --output /tmp/candidates.ml.json
+          cmp /tmp/candidates.ml.json public/data/agua-negra-v0/candidates.ml.json
+
+      - name: Evaluate detector artifacts
+        run: |
+          python experiments/mobility-anomaly/scripts/evaluate_artifacts.py \
+            --ground-truth public/data/agua-negra-v0/anomaly-ground-truth.synthetic.json \
+            --rule-candidates public/data/agua-negra-v0/candidates.rule.json \
+            --ml-candidates public/data/agua-negra-v0/candidates.ml.json
