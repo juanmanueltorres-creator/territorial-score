@@ -198,6 +198,7 @@ function fixtureDataset(options: FixtureOptions = {}): TerritorialDataset {
       ],
     },
     tracks: { terrain, weather, mobility, access, evidence },
+    satelliteContext: null,
     ruleCandidates: [ruleCandidate],
     mlCandidates,
   };
