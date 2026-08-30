@@ -47,7 +47,10 @@ button { font: inherit; }
 .candidate-card dl div { display: grid; grid-template-columns: 110px 1fr; gap: 7px; font-size: 0.66rem; }
 .candidate-card dt { color: #88947b; }
 .candidate-card dd { margin: 0; color: #c8d0b9; overflow-wrap: anywhere; }
+.candidate-comparison { margin: 0 11px 11px; padding: 9px; border: 1px solid #3b4930; border-radius: 8px; background: #151a12; }
+.candidate-comparison p { margin: 6px 0 0; color: #b9c5ae; font-size: 0.66rem; overflow-wrap: anywhere; }
 .candidate-warning { margin: 0 11px 11px; padding: 8px; border: 1px solid #56472c; border-radius: 8px; color: #d9c58e; background: #1b1710; font-size: 0.68rem; }
+.candidate-comparison .candidate-warning { margin: 8px 0 0; color: #d9c58e; }
 
 .score-panel { margin-top: 12px; }
 .score-grid { padding: 9px; display: grid; gap: 5px; overflow-x: auto; }
