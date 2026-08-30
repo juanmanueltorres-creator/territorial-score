@@ -1,3 +1,4 @@
+import type { MobilityAnomalyCandidate } from "../../contracts/candidate";
 import type { AlignedSegment } from "../../core/alignTracks";
 import type { ContextFrame } from "../../core/selectContext";
 
@@ -10,8 +11,40 @@ function stateLabel(value: string): string {
   return value.replaceAll("_", " ");
 }
 
+function containsTimestamp(candidate: MobilityAnomalyCandidate, timestamp: string): boolean {
+  const selected = Date.parse(timestamp);
+  const start = Date.parse(candidate.timeWindow.start);
+  const end = Date.parse(candidate.timeWindow.end);
+
+  return Number.isFinite(selected)
+    && Number.isFinite(start)
+    && Number.isFinite(end)
+    && selected >= start
+    && selected < end;
+}
+
+function uniqueFeatures(candidates: MobilityAnomalyCandidate[]): string[] {
+  return [...new Set(candidates.flatMap((candidate) => candidate.supportingFeatures))].sort();
+}
+
 export function ContextDetail({ frame, segment }: ContextDetailProps) {
-  const candidates = [...segment.ruleCandidates, ...segment.mlCandidates];
+  const activeRuleCandidates = segment.ruleCandidates.filter((candidate) => containsTimestamp(candidate, frame.timestamp));
+  const activeMlCandidates = segment.mlCandidates.filter((candidate) => containsTimestamp(candidate, frame.timestamp));
+  const candidates = [...activeRuleCandidates, ...activeMlCandidates];
+
+  const hasRule = activeRuleCandidates.length > 0;
+  const hasMl = activeMlCandidates.length > 0;
+  const comparisonState = hasRule && hasMl
+    ? "BOTH"
+    : hasRule
+      ? "RULE CANDIDATE"
+      : hasMl
+        ? "ML CANDIDATE"
+        : null;
+
+  const ruleFeatures = new Set(uniqueFeatures(activeRuleCandidates));
+  const sharedFeatures = uniqueFeatures(activeMlCandidates).filter((feature) => ruleFeatures.has(feature));
+  const anomalyScore = activeMlCandidates.find((candidate) => candidate.anomalyScore !== undefined)?.anomalyScore;
 
   return (
     <aside className="panel detail-panel" aria-labelledby="detail-title">
@@ -20,7 +53,7 @@ export function ContextDetail({ frame, segment }: ContextDetailProps) {
           <p className="eyebrow">CONTEXT FRAME</p>
           <h2 id="detail-title" data-testid="context-segment">{frame.segmentId}</h2>
         </div>
-        <span className="panel__meta">{frame.timestamp}</span>
+        <span className="panel__meta" data-testid="context-timestamp">{frame.timestamp}</span>
       </header>
 
       <div className="detail-grid">
@@ -34,6 +67,20 @@ export function ContextDetail({ frame, segment }: ContextDetailProps) {
           );
         })}
       </div>
+
+      {comparisonState ? (
+        <section className="candidate-comparison" data-testid="candidate-comparison" aria-label="Candidate comparison">
+          <div className="candidate-card__topline">
+            <strong>{comparisonState}</strong>
+            <span>SYNTHETIC EXPERIMENT</span>
+          </div>
+          <p>rule candidate: {hasRule ? "yes" : "no"}</p>
+          <p>ML candidate: {hasMl ? "yes" : "no"}</p>
+          <p>shared supporting features: {sharedFeatures.join(", ") || "none"}</p>
+          {anomalyScore === undefined ? null : <p>model anomaly score: {anomalyScore}</p>}
+          <p className="candidate-warning">Anomaly candidate ≠ road defect. Requires contextual review.</p>
+        </section>
+      ) : null}
 
       {candidates.length > 0 ? (
         <div className="candidate-detail">
@@ -66,7 +113,7 @@ export function ContextDetail({ frame, segment }: ContextDetailProps) {
         {frame.limitations.length > 0 ? <ul>{frame.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul> : <p>No additional limitations declared.</p>}
       </div>
 
-      <p className="candidate-warning">Anomaly candidate ≠ road defect. Requires contextual review.</p>
+      {comparisonState ? null : <p className="candidate-warning">Anomaly candidate ≠ road defect. Requires contextual review.</p>}
     </aside>
   );
 }
