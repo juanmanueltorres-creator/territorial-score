@@ -1,3 +1,4 @@
+import type { MobilityAnomalyCandidate } from "../../contracts/candidate";
 import type { AlignedSegment } from "../../core/alignTracks";
 import { TrackRow } from "./TrackRow";
 
@@ -5,10 +6,17 @@ type ScorePanelProps = {
   segments: AlignedSegment[];
   selectedSegmentId: string;
   onSelectSegment: (segmentId: string) => void;
+  onSelectCandidate: (candidate: MobilityAnomalyCandidate) => void;
   showMl: boolean;
 };
 
-export function ScorePanel({ segments, selectedSegmentId, onSelectSegment, showMl }: ScorePanelProps) {
+export function ScorePanel({
+  segments,
+  selectedSegmentId,
+  onSelectSegment,
+  onSelectCandidate,
+  showMl,
+}: ScorePanelProps) {
   const ruleCandidates = segments.flatMap((segment) => segment.ruleCandidates);
   const mlCandidates = segments.flatMap((segment) => segment.mlCandidates);
 
@@ -38,7 +46,7 @@ export function ScorePanel({ segments, selectedSegmentId, onSelectSegment, showM
                   key={candidate.candidateId}
                   className="candidate-chip"
                   data-selected={candidate.segmentId === selectedSegmentId ? "true" : "false"}
-                  onClick={() => onSelectSegment(candidate.segmentId)}
+                  onClick={() => onSelectCandidate(candidate)}
                   type="button"
                   aria-label={`rule candidate ${candidate.candidateId} ${candidate.segmentId}`}
                 >
@@ -58,7 +66,7 @@ export function ScorePanel({ segments, selectedSegmentId, onSelectSegment, showM
                   key={candidate.candidateId}
                   className="candidate-chip"
                   data-selected={candidate.segmentId === selectedSegmentId ? "true" : "false"}
-                  onClick={() => onSelectSegment(candidate.segmentId)}
+                  onClick={() => onSelectCandidate(candidate)}
                   type="button"
                   aria-label={`ml candidate ${candidate.candidateId} ${candidate.segmentId}`}
                 >
