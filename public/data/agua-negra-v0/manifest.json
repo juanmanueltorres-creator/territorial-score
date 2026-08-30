@@ -12,6 +12,7 @@
     "weather": { "path": "weather.json", "kind": "WEATHER", "required": true },
     "access": { "path": "access.json", "kind": "ACCESS", "required": true },
     "evidence": { "path": "evidence.json", "kind": "EVIDENCE", "required": true },
-    "ruleCandidates": { "path": "candidates.rule.json", "kind": "RULE_CANDIDATES", "required": true }
+    "ruleCandidates": { "path": "candidates.rule.json", "kind": "RULE_CANDIDATES", "required": true },
+    "mlCandidates": { "path": "candidates.ml.json", "kind": "ML_CANDIDATES", "required": false }
   }
 }
