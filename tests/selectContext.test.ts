@@ -100,6 +100,7 @@ function datasetFixture(): TerritorialDataset {
       ],
     },
     tracks: { terrain, weather, access, evidence, mobility: null },
+    satelliteContext: null,
     ruleCandidates: [candidate],
     mlCandidates: null,
   };
