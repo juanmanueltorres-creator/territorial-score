@@ -120,9 +120,9 @@ describe("human-readable Territorial Score matrix", () => {
     expect(within(score).getByText("Las Flores")).toBeInTheDocument();
     expect(within(score).getByText("Nodo Alto")).toBeInTheDocument();
     expect(within(score).getByText("4,048 m")).toBeInTheDocument();
-    expect(within(score).getByText("No frozen data")).toBeInTheDocument();
-    expect(within(score).getByText("No real telemetry")).toBeInTheDocument();
-    expect(within(score).getByText("Not verified")).toBeInTheDocument();
+    expect(within(score).getAllByText("No frozen data")).toHaveLength(5);
+    expect(within(score).getAllByText("No real telemetry")).toHaveLength(5);
+    expect(within(score).getAllByText("Not verified")).toHaveLength(5);
     expect(within(score).queryByText("RULE CANDIDATE")).not.toBeInTheDocument();
     expect(within(score).queryByText("ML CANDIDATE")).not.toBeInTheDocument();
   });
