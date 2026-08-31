@@ -4,6 +4,7 @@ import { alignTracks } from "../core/alignTracks";
 import { selectContext } from "../core/selectContext";
 import type { TerritorialDataset } from "../data/loadDataset";
 import { ContextDetail } from "../features/detail/ContextDetail";
+import { DetectionExperiment } from "../features/experiment/DetectionExperiment";
 import type { MapPanelProps } from "../features/map/MapPanel";
 import { IntroOverlay } from "../features/onboarding/IntroOverlay";
 import { ScorePanel } from "../features/score/ScorePanel";
@@ -107,10 +108,15 @@ export function App({ dataset, MapComponent }: AppProps) {
       <ScorePanel
         segments={segments}
         selectedSegmentId={selectedId}
-        selectedTimestamp={selectedTimestamp}
         onSelectSegment={handleSelectSegment}
+      />
+
+      <DetectionExperiment
+        ruleCandidates={dataset.ruleCandidates}
+        mlCandidates={dataset.mlCandidates}
+        selectedSegmentId={selectedId}
+        selectedTimestamp={selectedTimestamp}
         onSelectCandidate={handleSelectCandidate}
-        showMl={dataset.mlCandidates !== null}
       />
 
       <footer className="app-footer">
