@@ -8,6 +8,7 @@ import "../features/detail/detail.css";
 import type { MapPanelProps } from "../features/map/MapPanel";
 import { IntroOverlay } from "../features/onboarding/IntroOverlay";
 import { ScorePanel } from "../features/score/ScorePanel";
+import "../features/score/score.css";
 import "./app.css";
 
 export type AppProps = {
