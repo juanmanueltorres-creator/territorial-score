@@ -1,4 +1,3 @@
-import type { MobilityAnomalyCandidate } from "../../contracts/candidate";
 import type { SatelliteContextArtifact } from "../../contracts/satellite";
 import type { AlignedSegment, AlignedTrackSlice } from "../../core/alignTracks";
 import type { ContextFrame } from "../../core/selectContext";
@@ -13,26 +12,6 @@ type ContextDetailProps = {
   satelliteArtifact: SatelliteContextArtifact | null;
   datasetId: string;
 };
-
-function stateLabel(value: string): string {
-  return value.replaceAll("_", " ");
-}
-
-function containsTimestamp(candidate: MobilityAnomalyCandidate, timestamp: string): boolean {
-  const selected = Date.parse(timestamp);
-  const start = Date.parse(candidate.timeWindow.start);
-  const end = Date.parse(candidate.timeWindow.end);
-
-  return Number.isFinite(selected)
-    && Number.isFinite(start)
-    && Number.isFinite(end)
-    && selected >= start
-    && selected < end;
-}
-
-function uniqueFeatures(candidates: MobilityAnomalyCandidate[]): string[] {
-  return [...new Set(candidates.flatMap((candidate) => candidate.supportingFeatures))].sort();
-}
 
 function firstConcreteValue(slice: AlignedTrackSlice | null): string | number | boolean | null {
   if (!slice) return null;
@@ -52,24 +31,6 @@ export function ContextDetail({
   satelliteArtifact,
   datasetId,
 }: ContextDetailProps) {
-  const activeRuleCandidates = segment.ruleCandidates.filter((candidate) => containsTimestamp(candidate, frame.timestamp));
-  const activeMlCandidates = segment.mlCandidates.filter((candidate) => containsTimestamp(candidate, frame.timestamp));
-  const candidates = [...activeRuleCandidates, ...activeMlCandidates];
-
-  const hasRule = activeRuleCandidates.length > 0;
-  const hasMl = activeMlCandidates.length > 0;
-  const comparisonState = hasRule && hasMl
-    ? "BOTH"
-    : hasRule
-      ? "RULE CANDIDATE"
-      : hasMl
-        ? "ML CANDIDATE"
-        : null;
-
-  const ruleFeatures = new Set(uniqueFeatures(activeRuleCandidates));
-  const sharedFeatures = uniqueFeatures(activeMlCandidates).filter((feature) => ruleFeatures.has(feature));
-  const anomalyScore = activeMlCandidates.find((candidate) => candidate.anomalyScore !== undefined)?.anomalyScore;
-
   const location = getAguaNegraLocation(frame.segmentId);
   const locationLabel = location?.label ?? frame.segmentId;
   const reliefValue = location
@@ -162,46 +123,6 @@ export function ContextDetail({
         />
       </div>
 
-      {comparisonState ? (
-        <section className="candidate-comparison" data-testid="candidate-comparison" aria-label="Candidate comparison">
-          <div className="candidate-card__topline">
-            <strong>{comparisonState}</strong>
-            <span>SYNTHETIC EXPERIMENT</span>
-          </div>
-          <p>rule candidate: {hasRule ? "yes" : "no"}</p>
-          <p>ML candidate: {hasMl ? "yes" : "no"}</p>
-          <p>shared supporting features: {sharedFeatures.join(", ") || "none"}</p>
-          {anomalyScore === undefined ? null : <p>model anomaly score: {anomalyScore}</p>}
-          <p className="candidate-warning">Anomaly candidate ≠ road defect. Requires contextual review.</p>
-        </section>
-      ) : null}
-
-      {candidates.length > 0 ? (
-        <details className="candidate-detail candidate-detail--collapsible" data-testid="candidate-technical-details">
-          <summary>
-            <span>Technical candidate details</span>
-            <span className="candidate-detail__count">{candidates.length}</span>
-          </summary>
-          <div className="candidate-detail__body">
-            {candidates.map((candidate) => (
-              <article className="candidate-card" key={candidate.candidateId}>
-                <div className="candidate-card__topline">
-                  <strong>{candidate.detector} candidate detector</strong>
-                  <span>{stateLabel(candidate.evidenceState)}</span>
-                </div>
-                <dl>
-                  <div><dt>segment/time</dt><dd>{candidate.segmentId} · {candidate.timeWindow.start} → {candidate.timeWindow.end}</dd></div>
-                  <div><dt>vehicles observed</dt><dd>{candidate.vehiclesObserved ?? "not declared"}</dd></div>
-                  <div><dt>supporting features</dt><dd>{candidate.supportingFeatures.join(", ") || "none declared"}</dd></div>
-                  {candidate.anomalyScore === undefined ? null : <div><dt>anomaly score</dt><dd>{candidate.anomalyScore}</dd></div>}
-                  <div><dt>limitations</dt><dd>{candidate.limitations.join(" · ")}</dd></div>
-                </dl>
-              </article>
-            ))}
-          </div>
-        </details>
-      ) : null}
-
       <ProvenanceDetails
         segmentId={frame.segmentId}
         timestamp={frame.timestamp}
@@ -209,8 +130,6 @@ export function ContextDetail({
         limitations={provenanceLimitations}
         satelliteArtifact={satelliteArtifact}
       />
-
-      {comparisonState ? null : <p className="candidate-warning">Anomaly candidate ≠ road defect. Requires contextual review.</p>}
     </aside>
   );
 }
