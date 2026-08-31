@@ -94,7 +94,12 @@ export function App({ dataset, MapComponent }: AppProps) {
 
       <div className="workspace-grid">
         <MapComponent corridor={dataset.corridor} segments={segments} selectedSegmentId={selectedId} />
-        <ContextDetail frame={frame} segment={selectedSegment} />
+        <ContextDetail
+          frame={frame}
+          segment={selectedSegment}
+          satelliteArtifact={dataset.satelliteContext}
+          datasetId={dataset.manifest.datasetId}
+        />
       </div>
 
       <ScorePanel
