@@ -37,10 +37,6 @@ function stateLabel(value: string): string {
   return value.replaceAll("_", " ");
 }
 
-function detectorLabel(candidate: MobilityAnomalyCandidate): string {
-  return candidate.detector === "RULE" ? "Simple rule" : "Isolation Forest";
-}
-
 export function DetectionExperiment({
   ruleCandidates,
   mlCandidates,
@@ -105,7 +101,7 @@ export function DetectionExperiment({
       <div className="experiment-candidate-controls" aria-label="Synthetic candidate selection controls">
         {rules.length > 0 ? (
           <div className="experiment-candidate-group" data-testid="track-rule-candidate">
-            <span className="experiment-candidate-group__label">Simple rule candidates</span>
+            <span className="experiment-candidate-group__label">Rule candidates</span>
             <div className="candidate-strip">
               {rules.map((candidate) => (
                 <button
@@ -125,7 +121,7 @@ export function DetectionExperiment({
 
         {mlCandidates !== null ? (
           <div className="experiment-candidate-group" data-testid="track-ml-candidate">
-            <span className="experiment-candidate-group__label">Isolation Forest candidates</span>
+            <span className="experiment-candidate-group__label">ML candidates</span>
             <div className="candidate-strip">
               {ml.length > 0 ? ml.map((candidate) => (
                 <button
@@ -167,7 +163,7 @@ export function DetectionExperiment({
             {activeCandidates.map((candidate) => (
               <article className="candidate-card" key={candidate.candidateId}>
                 <div className="candidate-card__topline">
-                  <strong>{candidate.detector} candidate detector · {detectorLabel(candidate)}</strong>
+                  <strong>{candidate.detector} candidate detector</strong>
                   <span>{stateLabel(candidate.evidenceState)}</span>
                 </div>
                 <dl>
