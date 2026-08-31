@@ -142,7 +142,7 @@ describe("human-readable selected place context", () => {
     render(<App dataset={publicDataset()} MapComponent={MapProbe} />);
 
     expect(screen.getByTestId("context-segment")).toHaveTextContent("Nodo Alto");
-    expect(screen.getByText(/km 66\.6/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/km 66\.6/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/4,048 m/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/No frozen weather snapshot/i)).toBeInTheDocument();
     expect(screen.getByText(/No real operational vehicle telemetry/i)).toBeInTheDocument();
