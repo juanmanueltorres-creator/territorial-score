@@ -168,6 +168,31 @@ describe("selectContext", () => {
     expect("riskScore" in context).toBe(false);
   });
 
+  it("keeps an explicit MISSING satellite record in missingTracks while preserving its limitation", () => {
+    const dataset = datasetFixture();
+    dataset.satelliteContext = SatelliteContextArtifactSchema.parse({
+      ...dataset.satelliteContext,
+      segments: [
+        {
+          segmentId: "seg-a",
+          availability: "MISSING",
+          evidenceState: null,
+          surfaceClass: null,
+          indices: null,
+          previewRef: null,
+          reason: "EXCESSIVE_CLOUD",
+          limitations: ["cloud cover prevents a defensible spectral classification"],
+        },
+      ],
+    });
+
+    const context = selectContext(alignTracks(dataset), { segmentId: "seg-a", timestamp: ts });
+
+    expect(context.availableTracks).not.toContain("satellite");
+    expect(context.missingTracks).toContain("satellite");
+    expect(context.limitations).toContain("cloud cover prevents a defensible spectral classification");
+  });
+
   it("fails closed when the requested segment does not exist", () => {
     const aligned = alignTracks(datasetFixture());
 
