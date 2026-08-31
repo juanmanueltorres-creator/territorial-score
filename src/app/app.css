@@ -104,6 +104,19 @@ button { font: inherit; }
 .candidate-chip[data-selected="true"] { border-color: #e6d674; box-shadow: 0 0 0 1px #e6d674 inset; }
 .score-empty { color: #73878e; font-size: 0.63rem; }
 
+.detection-experiment { margin-top: 12px; border-color: #413f27; background: linear-gradient(180deg, rgba(26, 25, 15, 0.86), rgba(8, 20, 25, 0.93)); }
+.detection-experiment__header { align-items: flex-start; }
+.detection-experiment__intro { max-width: 760px; margin: 5px 0 0; color: #a8b6ad; font-size: 0.72rem; line-height: 1.5; }
+.experiment-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 11px; }
+.experiment-metric-card { min-width: 0; padding: 10px; border: 1px solid #3b4930; border-radius: 9px; background: #111912; }
+.experiment-metric-card strong { display: block; color: #e4e8d1; font-size: 0.76rem; }
+.experiment-metric-card span { display: block; margin-top: 4px; color: #d8cc93; font: 0.65rem ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+.experiment-metric-card p { margin: 7px 0 0; color: #909e8c; font-size: 0.66rem; line-height: 1.45; }
+.experiment-candidate-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 0 11px 11px; }
+.experiment-candidate-group { min-width: 0; border: 1px solid #2f3e2c; border-radius: 8px; overflow: hidden; background: #0d1711; }
+.experiment-candidate-group__label { display: block; padding: 7px 9px; border-bottom: 1px solid #2f3e2c; color: #9eaa93; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.experiment-candidate-group .candidate-strip { border-radius: 0; background: transparent; }
+
 .app-footer { padding: 12px 2px 2px; color: #667d84; font-size: 0.68rem; }
 .fatal-state { display: grid; gap: 7px; margin-top: 25vh; padding: 18px; border: 1px solid #53333a; border-radius: 10px; color: #e4c8cd; background: #1d1014; }
 
@@ -143,4 +156,5 @@ button { font: inherit; }
   .score-grid { padding: 7px; }
   .score-row { min-width: 610px; grid-template-columns: 104px minmax(0, 1fr); }
   .score-row__label { padding-inline: 7px; font-size: 0.58rem; }
+  .experiment-metrics, .experiment-candidate-controls { grid-template-columns: 1fr; }
 }
