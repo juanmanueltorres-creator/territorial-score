@@ -236,11 +236,12 @@ describe("Territorial Score UI", () => {
     expect(screen.queryByTestId("track-ml-candidate")).not.toBeInTheDocument();
   });
 
-  it("renders null weather as MISSING rather than numeric zero", () => {
+  it("renders null weather as plain-language absence while preserving its modelled evidence type", () => {
     render(<App dataset={fixtureDataset()} MapComponent={MapProbe} />);
 
     const weatherRow = screen.getByTestId("track-weather");
-    expect(within(weatherRow).getByText("MISSING")).toBeInTheDocument();
+    expect(within(weatherRow).getByText("No frozen data")).toBeInTheDocument();
+    expect(within(weatherRow).getAllByText("MODELLED").length).toBeGreaterThan(0);
     expect(within(weatherRow).queryByText(/^0$/)).not.toBeInTheDocument();
   });
 
