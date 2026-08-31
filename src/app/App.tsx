@@ -4,6 +4,7 @@ import { alignTracks } from "../core/alignTracks";
 import { selectContext } from "../core/selectContext";
 import type { TerritorialDataset } from "../data/loadDataset";
 import { ContextDetail } from "../features/detail/ContextDetail";
+import "../features/detail/detail.css";
 import type { MapPanelProps } from "../features/map/MapPanel";
 import { IntroOverlay } from "../features/onboarding/IntroOverlay";
 import { ScorePanel } from "../features/score/ScorePanel";
