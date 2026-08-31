@@ -15,7 +15,7 @@ const ts = "2026-08-30T12:00:00-03:00";
 function experimentDataset(): TerritorialDataset {
   const manifest = DatasetManifestSchema.parse({
     schemaVersion: "0.1",
-    datasetId: "experiment-fixture",
+    datasetId: "agua-negra-v0",
     title: "Detection experiment fixture",
     territoryRef: "admin:AR:1:J",
     corridorRef: "corridor:agua-negra-v1",
