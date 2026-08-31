@@ -56,9 +56,14 @@ export function selectContext(
 
   for (const trackName of trackOrder) {
     if (trackName === "satellite") {
-      if (segment.satellite) {
+      if (!segment.satellite) {
+        missingTracks.push(trackName);
+        continue;
+      }
+
+      limitations.push(...segment.satellite.limitations);
+      if (segment.satellite.availability === "AVAILABLE") {
         availableTracks.push(trackName);
-        limitations.push(...segment.satellite.limitations);
       } else {
         missingTracks.push(trackName);
       }
