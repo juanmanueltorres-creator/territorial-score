@@ -107,10 +107,7 @@ describe("human-readable Territorial Score matrix", () => {
       <ScorePanel
         segments={segments()}
         selectedSegmentId="an-nodo-alto"
-        selectedTimestamp={ts}
         onSelectSegment={() => undefined}
-        onSelectCandidate={() => undefined}
-        showMl
       />,
     );
 
