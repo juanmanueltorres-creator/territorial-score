@@ -141,7 +141,7 @@ Requires **Node.js 22+**.
 npm install
 npm test
 npm run build
-npm run dev
+npm exec vite
 ```
 
 The repository also verifies checked-in rule candidates and the separate synthetic ML benchmark in CI.
