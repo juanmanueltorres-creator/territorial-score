@@ -1,4 +1,5 @@
 import type { MobilityAnomalyCandidate } from "../contracts/candidate";
+import type { SatelliteSegment } from "../contracts/satellite";
 import type { Track, TrackSample } from "../contracts/track";
 import type { TerritorialDataset } from "../data/loadDataset";
 
@@ -17,6 +18,7 @@ export type AlignedSegment = {
   distanceEndM: number;
   terrain: AlignedTrackSlice | null;
   weather: AlignedTrackSlice | null;
+  satellite: SatelliteSegment | null;
   mobility: AlignedTrackSlice | null;
   access: AlignedTrackSlice | null;
   evidence: AlignedTrackSlice | null;
@@ -55,6 +57,29 @@ function sliceTrack(track: Track | null, segmentId: string): AlignedTrackSlice |
     sourceRef: track.sourceRef,
     limitations: [...track.limitations],
     samples,
+  };
+}
+
+function satelliteForSegment(
+  dataset: TerritorialDataset,
+  segmentId: string,
+): SatelliteSegment | null {
+  const satellite = dataset.satelliteContext?.segments.find(
+    (candidate) => candidate.segmentId === segmentId,
+  );
+  if (!satellite) return null;
+
+  if (satellite.availability === "AVAILABLE") {
+    return {
+      ...satellite,
+      indices: { ...satellite.indices },
+      limitations: [...satellite.limitations],
+    };
+  }
+
+  return {
+    ...satellite,
+    limitations: [...satellite.limitations],
   };
 }
 
@@ -112,6 +137,7 @@ export function alignTracks(dataset: TerritorialDataset): AlignedSegment[] {
     distanceEndM,
     terrain: sliceTrack(dataset.tracks.terrain, segmentId),
     weather: sliceTrack(dataset.tracks.weather, segmentId),
+    satellite: satelliteForSegment(dataset, segmentId),
     mobility: sliceTrack(dataset.tracks.mobility, segmentId),
     access: sliceTrack(dataset.tracks.access, segmentId),
     evidence: sliceTrack(dataset.tracks.evidence, segmentId),

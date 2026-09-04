@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build": "tsc -b && vite build",
-    "build:rule-candidates": "tsx scripts/build-rule-candidates.ts"
+    "build:rule-candidates": "tsx scripts/build-rule-candidates.ts",
+    "build:satellite-context": "tsx scripts/build-satellite-context.ts"
   },
   "dependencies": {
     "maplibre-gl": "^5.7.0",

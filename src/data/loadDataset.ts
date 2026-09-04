@@ -8,6 +8,10 @@ import {
   type DatasetArtifactRef,
   type DatasetManifest,
 } from "../contracts/manifest";
+import {
+  SatelliteContextArtifactSchema,
+  type SatelliteContextArtifact,
+} from "../contracts/satellite";
 import { TrackSchema, type Track } from "../contracts/track";
 
 const CoordinateSchema = z.tuple([z.number().finite(), z.number().finite()]);
@@ -47,6 +51,7 @@ export type TerritorialDataset = {
     evidence: Track;
     mobility: Track | null;
   };
+  satelliteContext: SatelliteContextArtifact | null;
   ruleCandidates: MobilityAnomalyCandidate[] | null;
   mlCandidates: MobilityAnomalyCandidate[] | null;
 };
@@ -104,6 +109,18 @@ function requireCoreArtifact(ref: DatasetArtifactRef, name: string): DatasetArti
   return ref;
 }
 
+async function loadSatelliteContext(
+  baseUrl: string,
+  manifest: DatasetManifest,
+  fetchImpl: typeof fetch,
+): Promise<SatelliteContextArtifact | null> {
+  if (manifest.schemaVersion !== "0.2") return null;
+
+  const ref = requireCoreArtifact(manifest.artifacts.satelliteContext, "satelliteContext");
+  const payload = await fetchJson(joinArtifactUrl(baseUrl, ref.path), fetchImpl, false);
+  return SatelliteContextArtifactSchema.parse(payload);
+}
+
 export async function loadDataset(
   baseUrl: string,
   fetchImpl: typeof fetch = fetch,
@@ -117,19 +134,29 @@ export async function loadDataset(
   const accessRef = requireCoreArtifact(manifest.artifacts.access, "access");
   const evidenceRef = requireCoreArtifact(manifest.artifacts.evidence, "evidence");
 
-  const [corridorPayload, terrain, weather, access, evidence, mobility, ruleCandidates, mlCandidates] =
-    await Promise.all([
-      fetchJson(joinArtifactUrl(baseUrl, corridorRef.path), fetchImpl, false),
-      loadTrack(baseUrl, terrainRef, fetchImpl),
-      loadTrack(baseUrl, weatherRef, fetchImpl),
-      loadTrack(baseUrl, accessRef, fetchImpl),
-      loadTrack(baseUrl, evidenceRef, fetchImpl),
-      manifest.artifacts.mobility
-        ? loadTrack(baseUrl, manifest.artifacts.mobility, fetchImpl)
-        : Promise.resolve(null),
-      loadCandidates(baseUrl, manifest.artifacts.ruleCandidates, fetchImpl),
-      loadCandidates(baseUrl, manifest.artifacts.mlCandidates, fetchImpl),
-    ]);
+  const [
+    corridorPayload,
+    terrain,
+    weather,
+    access,
+    evidence,
+    mobility,
+    satelliteContext,
+    ruleCandidates,
+    mlCandidates,
+  ] = await Promise.all([
+    fetchJson(joinArtifactUrl(baseUrl, corridorRef.path), fetchImpl, false),
+    loadTrack(baseUrl, terrainRef, fetchImpl),
+    loadTrack(baseUrl, weatherRef, fetchImpl),
+    loadTrack(baseUrl, accessRef, fetchImpl),
+    loadTrack(baseUrl, evidenceRef, fetchImpl),
+    manifest.artifacts.mobility
+      ? loadTrack(baseUrl, manifest.artifacts.mobility, fetchImpl)
+      : Promise.resolve(null),
+    loadSatelliteContext(baseUrl, manifest, fetchImpl),
+    loadCandidates(baseUrl, manifest.artifacts.ruleCandidates, fetchImpl),
+    loadCandidates(baseUrl, manifest.artifacts.mlCandidates, fetchImpl),
+  ]);
 
   if (!terrain || !weather || !access || !evidence) {
     throw new Error("dataset_required_track_missing");
@@ -139,6 +166,7 @@ export async function loadDataset(
     manifest,
     corridor: CorridorSchema.parse(corridorPayload),
     tracks: { terrain, weather, access, evidence, mobility },
+    satelliteContext,
     ruleCandidates,
     mlCandidates,
   };

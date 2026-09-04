@@ -1,6 +1,6 @@
 import type { AlignedSegment, AlignedTrackSlice } from "./alignTracks";
 
-export type ContextTrackName = "terrain" | "weather" | "mobility" | "access" | "evidence";
+export type ContextTrackName = "terrain" | "weather" | "satellite" | "mobility" | "access" | "evidence";
 
 export type ContextContradiction = {
   track: ContextTrackName;
@@ -18,7 +18,14 @@ export type ContextFrame = {
   limitations: string[];
 };
 
-const trackOrder: ContextTrackName[] = ["terrain", "weather", "mobility", "access", "evidence"];
+const trackOrder: ContextTrackName[] = [
+  "terrain",
+  "weather",
+  "satellite",
+  "mobility",
+  "access",
+  "evidence",
+];
 
 function unique<T>(values: T[]): T[] {
   return [...new Set(values)];
@@ -48,6 +55,21 @@ export function selectContext(
   const limitations: string[] = [];
 
   for (const trackName of trackOrder) {
+    if (trackName === "satellite") {
+      if (!segment.satellite) {
+        missingTracks.push(trackName);
+        continue;
+      }
+
+      limitations.push(...segment.satellite.limitations);
+      if (segment.satellite.availability === "AVAILABLE") {
+        availableTracks.push(trackName);
+      } else {
+        missingTracks.push(trackName);
+      }
+      continue;
+    }
+
     const slice = segment[trackName];
     if (slice) {
       availableTracks.push(trackName);

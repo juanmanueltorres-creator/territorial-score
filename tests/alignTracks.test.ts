@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DatasetManifestSchema } from "../src/contracts/manifest";
+import { SatelliteContextArtifactSchema } from "../src/contracts/satellite";
 import { TrackSchema } from "../src/contracts/track";
 import { alignTracks } from "../src/core/alignTracks";
 import type { TerritorialDataset } from "../src/data/loadDataset";
@@ -8,8 +9,8 @@ const ts = "2026-08-30T12:00:00-03:00";
 
 function datasetFixture(): TerritorialDataset {
   const manifest = DatasetManifestSchema.parse({
-    schemaVersion: "0.1",
-    datasetId: "agua-negra-v0",
+    schemaVersion: "0.2",
+    datasetId: "agua-negra-v0.2",
     title: "alignment fixture",
     territoryRef: "admin:AR:1:J",
     corridorRef: "corridor:agua-negra-v1",
@@ -21,6 +22,11 @@ function datasetFixture(): TerritorialDataset {
       weather: { path: "weather.json", kind: "WEATHER", required: true },
       access: { path: "access.json", kind: "ACCESS", required: true },
       evidence: { path: "evidence.json", kind: "EVIDENCE", required: true },
+      satelliteContext: {
+        path: "satellite-context.json",
+        kind: "SATELLITE_CONTEXT",
+        required: true,
+      },
     },
   });
 
@@ -78,6 +84,38 @@ function datasetFixture(): TerritorialDataset {
     ],
   });
 
+  const satelliteContext = SatelliteContextArtifactSchema.parse({
+    schemaVersion: "0.2",
+    artifactId: "fixture:satellite-context",
+    source: {
+      provider: "Sentinel-2",
+      processingSystem: "Google Earth Engine",
+      sourceRef: "fixture:sentinel-scene",
+    },
+    scene: {
+      sceneId: "COPERNICUS/S2_SR_HARMONIZED/FIXTURE",
+      acquiredAt: ts,
+      cloudPercentage: 8,
+    },
+    processing: {
+      processorVersion: "0.1.0",
+      ruleVersion: "0.1.0",
+      indexDefinitionsVersion: "0.1.0",
+    },
+    segments: [
+      {
+        segmentId: "seg-a",
+        availability: "AVAILABLE",
+        evidenceState: "DERIVED",
+        surfaceClass: "SNOW_LIKE",
+        indices: { ndvi: 0.08, ndwi: -0.11, ndsi: 0.62 },
+        previewRef: "satellite-preview.svg",
+        limitations: ["satellite fixture"],
+      },
+    ],
+    limitations: ["frozen satellite fixture"],
+  });
+
   return {
     manifest,
     corridor: {
@@ -91,6 +129,7 @@ function datasetFixture(): TerritorialDataset {
       ],
     },
     tracks: { terrain, weather, access, evidence, mobility: null },
+    satelliteContext,
     ruleCandidates: null,
     mlCandidates: null,
   };
@@ -116,6 +155,14 @@ describe("alignTracks", () => {
 
     expect(aligned[0]!.weather?.samples[0]!.value).toBeNull();
     expect(aligned[1]!.weather).toBeNull();
+  });
+
+  it("aligns satellite context by exact segment id without filling missing nodes", () => {
+    const aligned = alignTracks(datasetFixture());
+
+    expect(aligned[0]!.satellite?.availability).toBe("AVAILABLE");
+    expect(aligned[0]!.satellite?.surfaceClass).toBe("SNOW_LIKE");
+    expect(aligned[1]!.satellite).toBeNull();
   });
 
   it("preserves all conflicting evidence records", () => {
